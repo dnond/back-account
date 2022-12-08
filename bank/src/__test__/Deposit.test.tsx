@@ -6,7 +6,7 @@ import { createStore } from "../store/store";
 import { selectBalance } from "../store/selector";
 import { App } from "../App";
 import userEvent from "@testing-library/user-event";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 
 describe('deposit money', () => {
   it('should deposit money', async () => {
@@ -14,7 +14,7 @@ describe('deposit money', () => {
 
     steps.givenAccountBalance(10)
     await steps.whenDepositMoney(10)
-    steps.thenAccountBalanceIs(20)
+    await steps.thenAccountBalanceIs(20)
   })
 })
 
@@ -30,20 +30,18 @@ const createSteps = () => {
   }
 
   const whenDepositMoney = async (depositedMoney: number) => {
-    await store.dispatch(depositMoney(depositedMoney))
-
     const depositInput = screen.getByRole("spinbutton", {name: "deposit"})
     const depositButton = screen.getByRole("button", {name: "save"})
     await userEvent.type(depositInput, depositedMoney.toString())
     await userEvent.click(depositButton)
   }
 
-  const thenAccountBalanceIs = (expectedBalance: number) => {
-    const balance = selectBalance(store.getState())
+  const thenAccountBalanceIs = async (expectedBalance: number) => {
     const balanceStatus = screen.getByRole("status")
 
-    expect(balance).toBe(expectedBalance)
-    expect(balanceStatus).toHaveTextContent(expectedBalance.toString())
+    await waitFor(() => {
+      expect(balanceStatus).toHaveTextContent(expectedBalance.toString())
+    })
   }
 
   return { givenAccountBalance, whenDepositMoney, thenAccountBalanceIs }

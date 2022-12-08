@@ -5,6 +5,7 @@ import './index.css'
 import { createRepository } from './core/repository'
 
 const repository = createRepository()
+repository.init(0)
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

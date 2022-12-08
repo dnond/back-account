@@ -18,3 +18,5 @@ export const createStore = (repository: Repository, presenter: Presenter) => {
     middleware: getDefaultMiddleware => (getDefaultMiddleware({ thunk: { extraArgument: { interactor, presenter } } }))
   })
 }
+
+export type Dispatch = ReturnType<typeof createStore>["dispatch"];

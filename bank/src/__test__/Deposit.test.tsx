@@ -1,12 +1,12 @@
 import { createRepository } from "../core/repository"
 import { createPresenter } from "../core/presenter"
-import { createInteractor, Interactor } from "../core/interactor"
-import { depositMoney } from "../store/action"
-import { createStore } from "../store/store"
-import { selectBalance } from "../store/selector"
-import { render, screen } from "@testing-library/react"
-import { App } from "../App"
-import userEvent from '@testing-library/user-event'
+import { createInteractor } from "../core/interactor";
+import { depositMoney } from "../store/action";
+import { createStore } from "../store/store";
+import { selectBalance } from "../store/selector";
+import { App } from "../App";
+import userEvent from "@testing-library/user-event";
+import { render, screen } from "@testing-library/react";
 
 describe('deposit money', () => {
   it('should deposit money', async () => {

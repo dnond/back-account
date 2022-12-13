@@ -1,19 +1,26 @@
-import { FC, useState, useCallback, FormEvent } from "react"
+import { FC, useState, useCallback, FormEvent, useEffect } from "react"
 import { Provider, useDispatch, useSelector } from "react-redux"
 import { Repository } from "./core/repository"
 import { createPresenter } from "./core/presenter"
-import { createStore, Dispatch } from "./store/store"
-import { depositMoney } from "./store/action"
+import { createStore, Dispatch, AccountStore } from "./store/store"
+import { depositMoney, withdrawMoney } from "./store/action"
 import { selectBalance } from "./store/selector"
 
 export const App: FC<{repository: Repository}> = ({repository}) => {
   const presenter = createPresenter()
-  const store = createStore(repository, presenter)
+  const [store, setStore] = useState<AccountStore>()
 
-  return <Provider store={store}>
-    <Balance />
-    <Deposit />
-    </Provider>
+  useEffect(() => {
+    createStore(repository, presenter).then((newStore) => { setStore(newStore)})
+  }, [])
+
+  return store
+    ? <Provider store={store}>
+        <Balance />
+        <Deposit />
+        <Withdraw />
+      </Provider>
+    : <></>
 }
 
 export const Deposit: FC = () => {
@@ -32,6 +39,25 @@ export const Deposit: FC = () => {
   return <form onSubmit={onSubmit}>
     <label>deposit <input type="number" onInput={onInput} value={deposited} /></label>
     <button type="submit">save</button>
+  </form>
+}
+
+export const Withdraw: FC = () => {
+  const [withdrawed, setWithdraw] = useState("")
+  const dispatch = useDispatch<Dispatch>()
+
+  const onInput = useCallback((event: FormEvent<HTMLInputElement> & { target: {value: string} }) => {
+    setWithdraw(event.target.value)
+  }, [setWithdraw])
+
+  const onSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    dispatch(withdrawMoney(Number(withdrawed)))
+  }, [withdrawed, dispatch])
+
+  return <form onSubmit={onSubmit}>
+    <label>withdraw <input type="number" onInput={onInput} value={withdrawed} /></label>
+    <button type="submit">withdraw</button>
   </form>
 }
 

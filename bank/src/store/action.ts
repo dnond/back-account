@@ -11,3 +11,13 @@ export const depositMoney = createAsyncThunk<
 
   return extra.presenter.getBalance()
 })
+
+export const withdrawMoney = createAsyncThunk<
+  number,
+  number,
+  { extra: { interactor: Interactor, presenter: Presenter } }
+>("account/withdrawMoney", async (withdrawedMoney, { extra }) => {
+  await extra.interactor.withdraw(withdrawedMoney)
+
+  return extra.presenter.getBalance()
+})

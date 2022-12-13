@@ -8,7 +8,13 @@ export const createInteractor = (repository: Repository, presenter: Presenter) =
     presenter.setBalance(balance)
   }
 
-  return { deposit }
+  const withdraw = async (withdrawedMoney: number) => {
+    await repository.withdraw(withdrawedMoney)
+    const balance = await repository.getBalance()
+    presenter.setBalance(balance)
+  }
+
+  return { deposit, withdraw }
 }
 
 export type Interactor = ReturnType<typeof createInteractor>

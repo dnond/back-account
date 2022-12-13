@@ -1,17 +1,23 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit"
-import { accountSlice } from "./slice"
+import {
+  combineReducers,
+  configureStore,
+  ThunkDispatch,
+  EmptyObject,
+  AnyAction,
+  Store,
+  CombinedState
+} from "@reduxjs/toolkit"
+import { createAccountSlice } from "./slice"
 import { Repository } from "../core/repository"
 import { Presenter } from "../core/presenter"
-import { createInteractor } from "../core/interactor"
+import { createInteractor, Interactor } from "../core/interactor"
 
-const rootReducer = combineReducers({
-  [accountSlice.name]: accountSlice.reducer,
-})
-
-export type RootState = ReturnType<typeof rootReducer>
-
-export const createStore = (repository: Repository, presenter: Presenter) => {
+export const createStore = async (repository: Repository, presenter: Presenter) => {
   const interactor = createInteractor(repository, presenter)
+  const accountSlice = await createAccountSlice(repository)
+  const rootReducer = combineReducers({
+    [accountSlice.name]: accountSlice.reducer,
+  })
 
   return configureStore({
     reducer: rootReducer,
@@ -19,4 +25,19 @@ export const createStore = (repository: Repository, presenter: Presenter) => {
   })
 }
 
-export type Dispatch = ReturnType<typeof createStore>["dispatch"];
+export type AccountStore = Store<CombinedState<{
+  account: {
+    balance: number;
+  };
+}>, AnyAction>
+
+export type Dispatch = ThunkDispatch<EmptyObject, {
+  interactor: Interactor
+  presenter: Presenter
+}, AnyAction>
+
+export type RootState = {
+  account: {
+    balance: number;
+  };
+}

@@ -11,14 +11,21 @@ export const createRepository = () => {
     return Promise.resolve()
   }
 
+  const withdraw = async (withdrawedMoney: number) => {
+    inMemoryBalance = inMemoryBalance - withdrawedMoney
+
+    return Promise.resolve()
+  }
+
   const getBalance = async () => {
     return Promise.resolve(inMemoryBalance)
   }
 
-  return { init, deposit, getBalance }
+  return { init, deposit, withdraw, getBalance }
 }
 
 export interface Repository {
   deposit: (depositedMoney: number) => Promise<void>
+  withdraw: (withdrawedMoney: number) => Promise<void>
   getBalance: () => Promise<number>
 }

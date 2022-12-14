@@ -4,7 +4,7 @@ import { Repository } from "./core/repository"
 import { createPresenter } from "./core/presenter"
 import { createStore, Dispatch, AccountStore } from "./store/store"
 import { depositMoney, withdrawMoney } from "./store/action"
-import { selectBalance } from "./store/selector"
+import { selectBalance, selectBalanceHistories } from "./store/selector"
 
 export const App: FC<{repository: Repository}> = ({repository}) => {
   const presenter = createPresenter()
@@ -19,6 +19,7 @@ export const App: FC<{repository: Repository}> = ({repository}) => {
         <Balance />
         <Deposit />
         <Withdraw />
+        <BalanceHistoryTable />
       </Provider>
     : <></>
 }
@@ -45,6 +46,8 @@ export const Deposit: FC = () => {
 export const Withdraw: FC = () => {
   const [withdrawed, setWithdraw] = useState("")
   const dispatch = useDispatch<Dispatch>()
+  const balance = useSelector(selectBalance)
+  const disabled = withdrawed.length === 0 || balance < Number(withdrawed)
 
   const onInput = useCallback((event: FormEvent<HTMLInputElement> & { target: {value: string} }) => {
     setWithdraw(event.target.value)
@@ -57,11 +60,36 @@ export const Withdraw: FC = () => {
 
   return <form onSubmit={onSubmit}>
     <label>withdraw <input type="number" onInput={onInput} value={withdrawed} /></label>
-    <button type="submit">withdraw</button>
+    <button type="submit" disabled={disabled}>withdraw</button>
   </form>
 }
 
 export const Balance: FC = () => {
   const balance = useSelector(selectBalance)
   return <p role="status">{balance}</p>
+}
+
+const BalanceHistoryTable: FC = () => {
+  const balanceHistories = useSelector(selectBalanceHistories)
+
+  return <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Transaction</th>
+        <th>Balance</th>
+      </tr>
+    </thead>
+    <tbody>
+      {balanceHistories.map(({date, transaction, currentBalance}) => {
+        return (
+          <tr>
+            <td>{date.toString()}</td>
+            <td>{transaction}</td>
+            <td>{currentBalance}</td>
+          </tr>
+        )
+      })}
+    </tbody>
+  </table>
 }

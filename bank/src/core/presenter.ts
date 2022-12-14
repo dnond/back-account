@@ -1,5 +1,7 @@
+import { BalanceHistory } from './entities'
+
 export const createPresenter = () => {
-  const account = new Map([['balance', 0]])
+  const account = new Map<string, number | BalanceHistory[]>([['balance', 0], ['balanceHistories', []]])
 
   const setBalance = (balance: number) => {
     account.set('balance', balance)
@@ -15,7 +17,17 @@ export const createPresenter = () => {
     throw "Balance is not Number"
   }
 
-  return { setBalance, getBalance }
+  const setBalanceHistories = (balanceHistories: BalanceHistory[]) => {
+    account.set('balanceHistories', balanceHistories)
+  }
+
+  const getBalanceHistories = () => {
+    const balanceHistories = account.get('balanceHistories')
+
+    return balanceHistories as BalanceHistory[]
+  }
+
+  return { setBalance, getBalance, setBalanceHistories, getBalanceHistories }
 }
 
 export type Presenter = ReturnType<typeof createPresenter>

@@ -8,7 +8,23 @@ describe('withdraw money', () => {
     await whenWithdrawMoney(20)
     await thenAccountBalanceIs(10)
   })
+
+  it('can not withdraw money', async () => {
+    givenAccountBalance(10)
+    await whenWantWithdrawMoney(20)
+    await thenWithDrawIsImpossible()
+  })
 })
+
+const thenWithDrawIsImpossible = async () => {
+  const withdrawButton = await screen.findByRole("button", {name: "withdraw"})
+  expect(withdrawButton).toBeDisabled()
+}
+
+const whenWantWithdrawMoney = async (wantedWithdrawMoney: number) => {
+  const withdrawInput = await screen.findByRole("spinbutton", {name: "withdraw"})
+  await userEvent.type(withdrawInput, wantedWithdrawMoney.toString())
+}
 
 const whenWithdrawMoney = async (withdrawedMoney: number) => {
   const withdrawInput = await screen.findByRole("spinbutton", {name: "withdraw"})

@@ -11,6 +11,7 @@ import { createAccountSlice } from "./slice"
 import { Repository } from "../core/repository"
 import { Presenter } from "../core/presenter"
 import { createInteractor, Interactor } from "../core/interactor"
+import { BalanceHistory } from "../core/entities"
 
 export const createStore = async (repository: Repository, presenter: Presenter) => {
   const interactor = createInteractor(repository, presenter)
@@ -25,11 +26,7 @@ export const createStore = async (repository: Repository, presenter: Presenter) 
   })
 }
 
-export type AccountStore = Store<CombinedState<{
-  account: {
-    balance: number;
-  };
-}>, AnyAction>
+export type AccountStore = Store<CombinedState<RootState>, AnyAction>
 
 export type Dispatch = ThunkDispatch<EmptyObject, {
   interactor: Interactor
@@ -39,5 +36,6 @@ export type Dispatch = ThunkDispatch<EmptyObject, {
 export type RootState = {
   account: {
     balance: number;
+    balanceHistories: BalanceHistory[];
   };
 }

@@ -18,7 +18,7 @@ export const createAccountSlice = async (repository: Repository) => {
         return payload
       })
       builder.addCase(withdrawMoney.fulfilled, (state, { payload }) => {
-        state.balance = payload
+        return payload
       })
     },
   })

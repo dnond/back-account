@@ -81,9 +81,9 @@ const BalanceHistoryTable: FC = () => {
       </tr>
     </thead>
     <tbody>
-      {balanceHistories.map(({date, transaction, currentBalance}) => {
+      {balanceHistories.map(({date, transaction, currentBalance}, index) => {
         return (
-          <tr>
+          <tr key={index}>
             <td>{date.toString()}</td>
             <td>{transaction}</td>
             <td>{currentBalance}</td>

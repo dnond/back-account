@@ -28,6 +28,14 @@ export const createRepository = () => {
 
   const withdraw = async (withdrawedMoney: number) => {
     inMemoryBalance = inMemoryBalance - withdrawedMoney
+    inMemoryBalanceHistories = [
+      ...inMemoryBalanceHistories,
+      {
+        date: new Date("2022/12/14"),
+        transaction: withdrawedMoney * (-1),
+        currentBalance: inMemoryBalance
+      }
+    ]
 
     return Promise.resolve()
   }
